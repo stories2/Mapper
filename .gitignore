@@ -327,3 +327,4 @@ dist
 .vscode-test
 
 # End of https://www.toptal.com/developers/gitignore/api/node,intellij,intellij+iml,intellij+all
+test-stories282.pem
