@@ -23,6 +23,7 @@ services:
       - "443:443"
   mariadb:
     image: mariadb:10.5.8
+    restart: always
     networks:
       - mapNet
     ports:
@@ -32,3 +33,21 @@ services:
       - TZ=Asia/Seoul
     volumes:
       - ./db:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.0.4
+    networks:
+      - mapNet
+    ports:
+      - "8080:8080"
+    restart: always
+    links:
+      - "mariadb:db"
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - PMA_HOST=mariadb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=
+      - TZ=Asia/Seoul
+      - UPLOAD_LIMIT=2000000000
+    depends_on:
+      - mariadb
