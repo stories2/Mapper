@@ -15,8 +15,8 @@ const result = map.features.map(i => {
         },
         coordinates: i.geometry.coordinates[0].map(xy => {
             return {
-                lat: xy[0],
-                lot: xy[1]
+                lat: xy[1],
+                lot: xy[0]
             }
         })
     }
