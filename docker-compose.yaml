@@ -9,6 +9,10 @@ services:
     image: mapapi
     restart: always
     container_name: mapapi_app
+    depends_on:
+      - mariadb
+    links:
+      - "mariadb"
     networks:
       - mapNet
     volumes:
@@ -17,3 +21,14 @@ services:
     ports:
       - "80:80"
       - "443:443"
+  mariadb:
+    image: mariadb:10.5.8
+    networks:
+      - mapNet
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - TZ=Asia/Seoul
+    volumes:
+      - ./db:/var/lib/mysql
