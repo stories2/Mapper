@@ -1,0 +1,19 @@
+version: '3'
+
+networks:
+  mapNet:
+    driver: bridge
+services:
+  nginxphp:
+    build: ./
+    image: mapapi
+    restart: always
+    container_name: mapapi_app
+    networks:
+      - mapNet
+    volumes:
+      - ./html:/var/www/html
+      - /etc/letsencrypt/archive/stories282.shop/:/letsencrypt
+    ports:
+      - "80:80"
+      - "443:443"
