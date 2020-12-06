@@ -24,6 +24,7 @@ services:
   mariadb:
     image: mariadb:10.5.8
     restart: always
+    container_name: mariadb
     networks:
       - mapNet
     ports:
@@ -38,10 +39,10 @@ services:
     networks:
       - mapNet
     ports:
-      - "8080:8080"
+      - "8082:80"
     restart: always
     links:
-      - "mariadb:db"
+      - "mariadb"
     environment:
       - MYSQL_ROOT_PASSWORD=
       - PMA_HOST=mariadb
