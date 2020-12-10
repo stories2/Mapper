@@ -3,7 +3,7 @@ require_once 'global.php';
 
 $mysqli = new mysqli($DB_SERVER, $DB_USER, $DB_PASSWORD, $DB_DB_NAME);
 
-$stmt = $mysqli->prepare('CALL API_TO_WEB_SELECT_STORE_USING_DISTANCE(37.513224, 127.1001228, 5, 0, 100)');
+$stmt = $mysqli->prepare('CALL API_TO_WEB_SELECT_STORE_USING_DISTANCE(37.513224, 127.1001228, '. $_REQUEST['range'] .', NULL, NULL, '. (empty($_REQUEST['gugun']) ? 'NULL' : '\''.$_REQUEST['gugun'].'\'') . ', NULL, 0, 987654321)');
 //    $stmt->execute(array(':param1' => $param1, ':param2' => $param2));
 $stmt->execute();
 //    if (!$mysqli->multi_query('CALL API_TO_WEB_SELECT_MAP_POLYGON_USING_DISTANCE(37.513224, 127.1001228, 5, 0, 100)')) {
@@ -21,7 +21,9 @@ try {
     }
     while($row = $abc->fetch_assoc()) {
 //            var_dump($row);
-        $result[] = array('s_code' => $row['s_code'], 's_name' => $row['s_name'],
+        $result[] = array(
+            'cnt' => $row['cnt'],
+            's_code' => $row['s_code'], 's_name' => $row['s_name'],
             'tel' => $row['tel'], 'fax' => $row['fax'],
             'sido_name' => $row['sido_name'], 'gugun_name' => $row['gugun_name'], 'dong_name' => $row['dong_name'],
             'addr'=> $row['addr'], 'doro_address' => $row['doro_address'], 'lat' => $row['lat'],
