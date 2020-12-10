@@ -96,6 +96,22 @@
                 infowindow.open(map, marker);
             })
         });
+
+        kakao
+            .maps
+            .event
+            .addListener(map, 'zoom_changed', function () {
+                // 지도의 현재 레벨을 얻어옵니다
+                const level = map.getLevel();
+                if (level <= 3) {
+                    // 동 안의 개별 출력
+
+                } else if (3 < level && level <= 9) {
+                    // 구 단위의 묶음 출력
+                } else {
+                    // 시도 단위의 묶음 출력
+                }
+            });
     }
 </script>
 </body>
