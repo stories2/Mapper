@@ -67,35 +67,35 @@
             imageSize = new kakao.maps.Size(32, 32), // 마커이미지의 크기입니다
             imageOption = {offset: new kakao.maps.Point(16, 32)};
         const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
-        $.get( "store.php", ( data ) => {
-            console.log('store', data);
-
-            data.data.data.forEach(store => {
-// 마커가 표시될 위치입니다
-                const markerPosition  = new kakao.maps.LatLng(store.lat, store.lot);
-
-// 마커를 생성합니다
-                const marker = new kakao.maps.Marker({
-                    position: markerPosition,
-                    image: markerImage
-                });
-
-// 마커가 지도 위에 표시되도록 설정합니다
-                marker.setMap(map);
-
-                var iwContent = `<div style="padding:5px;">스타벅스 ${store.s_name}점</div><div>${store.sido_name}, ${store.gugun_name}, ${store.dong_name}</div>`, // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-                    iwPosition = new kakao.maps.LatLng(store.lat, store.lot); //인포윈도우 표시 위치입니다
-
-// 인포윈도우를 생성합니다
-                var infowindow = new kakao.maps.InfoWindow({
-                    position : iwPosition,
-                    content : iwContent
-                });
-
-// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-                infowindow.open(map, marker);
-            })
-        });
+//         $.get( "store.php", ( data ) => {
+//             console.log('store', data);
+//
+//             data.data.data.forEach(store => {
+// // 마커가 표시될 위치입니다
+//                 const markerPosition  = new kakao.maps.LatLng(store.lat, store.lot);
+//
+// // 마커를 생성합니다
+//                 const marker = new kakao.maps.Marker({
+//                     position: markerPosition,
+//                     image: markerImage
+//                 });
+//
+// // 마커가 지도 위에 표시되도록 설정합니다
+//                 marker.setMap(map);
+//
+//                 var iwContent = `<div style="padding:5px;">스타벅스 ${store.s_name}점</div><div>${store.sido_name}, ${store.gugun_name}, ${store.dong_name}</div>`, // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+//                     iwPosition = new kakao.maps.LatLng(store.lat, store.lot); //인포윈도우 표시 위치입니다
+//
+// // 인포윈도우를 생성합니다
+//                 var infowindow = new kakao.maps.InfoWindow({
+//                     position : iwPosition,
+//                     content : iwContent
+//                 });
+//
+// // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+//                 infowindow.open(map, marker);
+//             })
+//         });
 
         console.log('map', map);
 
@@ -124,26 +124,173 @@
 
         const geocoder = new kakao.maps.services.Geocoder();
 
-        kakao.maps.event.addListener(map, 'idle', function() {
+        const markers = [];
+        const infos = [];
+
+        function showMarkers(data) {
+            console.log('data', data, 'map', map);
+            data.forEach(store => {
+// 마커가 표시될 위치입니다
+                const markerPosition  = new kakao.maps.LatLng(store.lat, store.lot);
+
+                // console.log('marker lat lot', store.lat, store.lot)
+// 마커를 생성합니다
+                const marker = new kakao.maps.Marker({
+                    position: markerPosition,
+                    image: markerImage
+                });
+
+// 마커가 지도 위에 표시되도록 설정합니다
+                marker.setMap(map);
+
+                var iwContent = `<div style="padding:5px;">스타벅스 ${store.s_name}점</div><div>${store.sido_name}, ${store.gugun_name}, ${store.dong_name}</div>`, // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+                    iwPosition = new kakao.maps.LatLng(store.lat, store.lot); //인포윈도우 표시 위치입니다
+
+                const zoom = map.getLevel();
+                if (zoom <= 5) {
+                    // 동 안의 개별 출력
+                    iwContent = `<div style="padding:5px;">스타벅스 ${store.s_name}점</div><div>${store.sido_name}, ${store.gugun_name}, ${store.dong_name}</div>`;
+                } else if (5 < zoom && zoom <= 6) {
+                    // 동 단위의 묶음 출력
+                    iwContent = `<div style="padding:5px;">스타벅스 ${store.dong_name} ${store.cnt}곳</div>`;
+                } else if (6 < zoom && zoom <= 9) {
+                    // 구 단위의 묶음 출력
+                } else {
+                    // 시도 단위의 묶음 출력
+                }
+// 인포윈도우를 생성합니다
+//                 var infowindow = new kakao.maps.InfoWindow({
+//                     position : iwPosition,
+//                     content : iwContent
+//                 });
+//
+// // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+//                 infowindow.open(map, marker);
+//
+//                 infos.push(infowindow);
+
+
+                // const iwContent = '<div style="padding:5px;">Hello World!</div>'; // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+
+// 인포윈도우를 생성합니다
+                const infowindow = new kakao.maps.InfoWindow({
+                    content : iwContent
+                });
+// 마커에 마우스오버 이벤트를 등록합니다
+                kakao.maps.event.addListener(marker, 'mouseover', () => {
+                    // 마커에 마우스오버 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다
+                    infowindow.open(map, marker);
+                });
+
+// 마커에 마우스아웃 이벤트를 등록합니다
+                kakao.maps.event.addListener(marker, 'mouseout', () => {
+                    // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다
+                    infowindow.close();
+                });
+                markers.push(marker);
+            })
+        }
+
+
+        function loadStoreData(region, latlot, zoom) {
+            return new Promise(((resolve, reject) => {
+                if (isNaN(zoom)) {
+                    console.log('zoom is nan');
+                    reject('Zoom is nan');
+                    return;
+                }
+                if (zoom <= 5) {
+                    // 동 안의 개별 출력
+                    $.get( "store.php?range=10", ( data ) => {
+                          resolve(data.data.data)
+                    })
+                } else if (5 < zoom && zoom <= 6) {
+                    // 동 단위의 묶음 출력
+                    $.get( `store.php?range=50&gugun=${region.region_2depth_name}`, ( data ) => {
+                        resolve(data.data.data)
+                    })
+                } else if (6 < zoom && zoom <= 9) {
+                    // 구 단위의 묶음 출력
+                    resolve([]);
+                } else {
+                    // 시도 단위의 묶음 출력
+                    resolve([]);
+                }
+            }))
+        }
+
+        function resetMarkers() {
+            console.log('resetMarkers', markers)
+            (markers || []).forEach(i => {
+                i.setMap(null)
+            })
+        }
+
+        getRegion(geocoder, latlng)
+            .then(region => {
+                loadStoreData(region, latlng, level)
+                .then(data => {
+                    // resetMarkers();
+                    (markers || []).forEach(i => {
+                        i.setMap(null)
+                    });
+                    markers.length = 0;
+                    (infos || []).forEach(i => {
+                        i.close();
+                    })
+                    infos.length = 0;
+                    showMarkers(data);
+                })
+            })
+
+        function getRegion(geocoder, latlot) {
+            return new Promise(((resolve, reject) => {
+                geocoder.coord2RegionCode(latlot.getLng(), latlot.getLat(), (result, status) => {
+                    if (status === kakao.maps.services.Status.OK) {
+                        console.log('region', result)
+                        if(!result) {
+                            reject('Error! empty region');
+                            return;
+                        }
+                        const filtered = (result || []).filter(i => i.region_type === 'B');
+                        if (!filtered || filtered.length <= 0) {
+                            reject('Error! cannot find region type B');
+                            return;
+                        }
+                        resolve(filtered[0]);
+                    } else {
+                        reject('Error! cannot get region');
+                    }
+                });
+            }))
+        }
+
+        kakao.maps.event.addListener(map, 'idle', () => {
             latlng = map.getCenter();
             level = map.getLevel();
-            console.log('[idle] level, center', level, latlng.getLat(), latlng.getLng())
-
-            geocoder.coord2RegionCode(latlng.getLng(), latlng.getLat(), (result, status) => {
-                if (status === kakao.maps.services.Status.OK) {
-                    console.log('[idle] region', result)
-
-                    if (level <= 3) {
-                        // 동 안의 개별 출력
-                    } else if (3 < level && level <= 6) {
-                        // 동 단위의 묶음 출력
-                    } else if (6 < level && level <= 9) {
-                        // 구 단위의 묶음 출력
-                    } else {
-                        // 시도 단위의 묶음 출력
-                    }
-                }
-            });
+            console.log('[idle] level, center', level, latlng.getLat(), latlng.getLng());
+            if (isNaN(latlng.getLat()) || isNaN(latlng.getLng()) || isNaN(level)) {
+                console.warn('latlot, level is nan');
+                return;
+            }
+            getRegion(geocoder, latlng)
+                .then(region => {
+                    console.log('region', region);
+                    loadStoreData(region, latlng, level)
+                        .then(data => {
+                            // resetMarkers();
+                            (markers || []).forEach(i => {
+                                i.setMap(null)
+                            });
+                            markers.length = 0;
+                            console.log('info len', infos.length, infos);
+                            (infos || []).forEach(i => {
+                                i.close();
+                            })
+                            infos.length = 0;
+                            showMarkers(data);
+                        })
+                })
         });
 
         // kakao.maps.event.addListener(map, 'center_changed', () => {
