@@ -23,6 +23,7 @@ try {
 //            var_dump($row);
         $result[] = array('s_code' => $row['s_code'], 's_name' => $row['s_name'],
             'tel' => $row['tel'], 'fax' => $row['fax'],
+            'sido_name' => $row['sido_name'], 'gugun_name' => $row['gugun_name'], 'dong_name' => $row['dong_name'],
             'addr'=> $row['addr'], 'doro_address' => $row['doro_address'], 'lat' => $row['lat'],
             'lot'=>$row['lot'], 'distance'=>$row['distance']);
     }
