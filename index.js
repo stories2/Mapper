@@ -3,11 +3,15 @@ const starbucks = require('./starbucks.json');
 console.log('len', starbucks.list.length);
 
 const storeList = starbucks.list.map(store => {
+    const dong = store.addr.match(/([가-힣|\w|\d]*[읍|면|동|가][\d|\-]*)\ /g);
     return {
         s_code: store.s_code,
         s_name: `\"${store.s_name}\"`,
         tel: `\"${store.tel}\"`,
         fax: `\"${store.fax}\"`,
+        sido_name: `\"${store.sido_name}\"`,
+        gugun_name: `\"${store.gugun_name}\"`,
+        dong_name: `\"${dong ? dong[0].replace(' ', '') : ''}\"`,
         addr: `\"${store.addr}\"`,
         doro_address: `\"${store.doro_address}\"`,
         lat: Number(store.lat),
