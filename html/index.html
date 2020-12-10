@@ -107,8 +107,9 @@
                 const level = map.getLevel();
                 if (level <= 3) {
                     // 동 안의 개별 출력
-
-                } else if (3 < level && level <= 9) {
+                } else if (3 < level && level <= 6) {
+                    // 동 단위의 묶음 출력
+                } else if (6 < level && level <= 9) {
                     // 구 단위의 묶음 출력
                 } else {
                     // 시도 단위의 묶음 출력
@@ -131,6 +132,16 @@
             geocoder.coord2RegionCode(latlng.getLng(), latlng.getLat(), (result, status) => {
                 if (status === kakao.maps.services.Status.OK) {
                     console.log('[idle] region', result)
+
+                    if (level <= 3) {
+                        // 동 안의 개별 출력
+                    } else if (3 < level && level <= 6) {
+                        // 동 단위의 묶음 출력
+                    } else if (6 < level && level <= 9) {
+                        // 구 단위의 묶음 출력
+                    } else {
+                        // 시도 단위의 묶음 출력
+                    }
                 }
             });
         });
