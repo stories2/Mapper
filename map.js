@@ -22,8 +22,12 @@ const result = map.features.map(i => {
     }
 })
 result.forEach(i => {
-    i.center.lat = i.coordinates.map(t => t.lat).reduce((acc, current) => acc + current) / i.coordinates.length
-    i.center.lot = i.coordinates.map(t => t.lot).reduce((acc, current) => acc + current) / i.coordinates.length
+    const maxLat = Math.max(...i.coordinates.map(t => t.lat));
+    const minLat = Math.min(...i.coordinates.map(t => t.lat));
+    const maxLot = Math.max(...i.coordinates.map(t => t.lot));
+    const minLot = Math.min(...i.coordinates.map(t => t.lot));
+    i.center.lat = (minLat + maxLat) / 2
+    i.center.lot = (minLot + maxLot) / 2
 })
 console.log('0 point', result[0])
 
